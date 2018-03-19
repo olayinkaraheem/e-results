@@ -54,60 +54,13 @@ class ResultsController extends \yii\web\Controller {
     public function actionLgaResult($id){
 
         
-///////////////////////////////////////////////////////////////////////////////
-        // $puCount = PollingUnit::find()
-        //         ->where(['lga_id'=>$id])
-        //         ->count();
-        // $puMatch = PollingUnit::find()
-        //         ->where(['lga_id'=>$id])
-        //         ->all();
 
-        // $matchRes = [];
-
-        // foreach($puMatch as $match){
-        //     $puResMatch = AnnouncedPuResults::find()
-        //                     ->where(['polling_unit_uniqueid'=>$match->uniqueid])
-        //                     ->all();
-        //     echo $match->uniqueid."<br>";
-        //     if(count($puResMatch) > 0){
-        //         array_push($matchRes, $puResMatch);
-        //     }
-        // }
-
-        // foreach ($matchRes as $match) {
-
-        // }
-/////////////////////////////////////////////////////////////////////////
-
-        // echo "<pre>";
-        //         var_dump($matchRes[0]);
-        //         echo "total : ".$puCount;
-            
-        //         echo "</pre>";
-        //         die();
-        
-        // $res = AnnouncedPuResults::find()
-        //                         ->where(['polling_unit_uniqueid'=>PollingUnit::find('uniqueid')->where(['lga_id'=>$id])])
-        //                         ->all();
-        // $
-        // foreach()
-        // $res = AnnouncedPuResults::find()
-        //         ->where(['polling_unit_uniqueid'=>$pus])
-        //         ->all();
 
         $pu_uniqueids = PollingUnit::find('uniqueid')
                             ->where(['lga_id'=>$id])
                             ->all();
 
-        // foreach($pu_uniqueids as $pu_uniqueid){
-
-        // }
-
-        // echo "<pre>";
-        // var_dump($pu_uniqueid);
-        // echo "</pre>";
-        // die();
-
+        
                
 
 
