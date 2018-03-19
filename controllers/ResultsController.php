@@ -54,13 +54,60 @@ class ResultsController extends \yii\web\Controller {
     public function actionLgaResult($id){
 
         
+        //////////////////////////////////////////////////////////////////////////////
+        // $puCount = PollingUnit::find()
+        //         ->where(['lga_id'=>$id])
+        //         ->count();
+        // $puMatch = PollingUnit::find()
+        //         ->where(['lga_id'=>$id])
+        //         ->all();
 
+        // $matchRes = [];
+
+        // foreach($puMatch as $match){
+        //     $puResMatch = AnnouncedPuResults::find()
+        //                     ->where(['polling_unit_uniqueid'=>$match->uniqueid])
+        //                     ->all();
+        //     echo $match->uniqueid."<br>";
+        //     if(count($puResMatch) > 0){
+        //         array_push($matchRes, $puResMatch);
+        //     }
+        // }
+
+        // foreach ($matchRes as $match) {
+
+        // }
+        /////////////////////////////////////////////////////////////////////////
+
+        // echo "<pre>";
+        //         var_dump($matchRes[0]);
+        //         echo "total : ".$puCount;
+            
+        //         echo "</pre>";
+        //         die();
+        
+        // $res = AnnouncedPuResults::find()
+        //                         ->where(['polling_unit_uniqueid'=>PollingUnit::find('uniqueid')->where(['lga_id'=>$id])])
+        //                         ->all();
+        // $
+        // foreach()
+        // $res = AnnouncedPuResults::find()
+        //         ->where(['polling_unit_uniqueid'=>$pus])
+        //         ->all();
 
         $pu_uniqueids = PollingUnit::find('uniqueid')
                             ->where(['lga_id'=>$id])
                             ->all();
 
-        
+        // foreach($pu_uniqueids as $pu_uniqueid){
+
+        // }
+
+        // echo "<pre>";
+        // var_dump($pu_uniqueid);
+        // echo "</pre>";
+        // die();
+
                
 
 
@@ -102,41 +149,42 @@ class ResultsController extends \yii\web\Controller {
                             <th>Party Score</th>
                         </thead>
                         <tbody>';
-                        foreach($results as $result){
+                foreach($results as $result){
 
-                           echo '<tr>
-                                <td>'.$result->polling_unit->polling_unit_name.'</td>
-                                <td>'.$result->polling_unit->ward->ward_name.'</td>
-                                <td>'.$result->polling_unit->lga->lga_name.'</td>
-                                <td>'.$result->party_abbreviation.'</td>
-                                <td>'.$result->party_score.'</td>
-                            </tr>';
+                   echo '<tr>
+                        <td>'.$result->polling_unit->polling_unit_name.'</td>
+                        <td>'.$result->polling_unit->ward->ward_name.'</td>
+                        <td>'.$result->polling_unit->lga->lga_name.'</td>
+                        <td>'.$result->party_abbreviation.'</td>
+                        <td>'.$result->party_score.'</td>
+                    </tr>';
 
-                            $total += $result->party_score;
+                    $total += $result->party_score;
 
-                        }
+                }
 
-                        echo '<tr>
-                            <td colspan="4"><strong class="text-center">Total</strong></td>
-                            <td><strong>'.$total.'</strong></td>
-                        </tr>
+                echo '<tr>
+                    <td colspan="4"><strong class="text-center">Total</strong></td>
+                    <td><strong>'.$total.'</strong></td>
+                </tr>
 
-                                    
-                                </tbody>
-                            </table>';
-                         } else {
-                            echo "No Result available For This LGA.";
-                        }
+                            
+                        </tbody>
+                    </table>';
+                 } else {
+                    echo "No Result available For This LGA.";
+                }
                         
-        } else {
-            echo "No Result available For This LGA.";
+            } else {
+            
+                echo "No Polling Unit Available For This LGA.";
 
         }
 
     }
 
     public function actionNew_pu(){
-    $new_result = new AnnouncedPuResults();
+        $new_result = new AnnouncedPuResults();
 
         if ($new_result->load(Yii::$app->request->post())) {                
 
@@ -228,10 +276,7 @@ class ResultsController extends \yii\web\Controller {
 
                  echo "All Parties Results For This Polling Unit Filled";
 
-            }
-
-
-            
+            }            
 
         } else {
 
@@ -248,8 +293,69 @@ class ResultsController extends \yii\web\Controller {
         // echo "</pre>";
         // die();
 
-        
+    }
 
+    public function actionListLgaByState($id){
+        $lgas = Lga::find()
+                    ->where(['state_id'=>$id])
+                    ->all();
+
+        foreach($lgas as $lga){
+            echo "<option value='".$lga->lga_id."'>".$lga->lga_name."</option>";
+        }
+    }
+
+    public function actionListPollingUnitUidByLga($id){
+        $polling_units = PollingUnit::find()
+                                ->where(['lga_id'=>$id])
+                                ->all();
+        foreach ($polling_units as $polling_unit) {
+            echo "<option value='".$polling_unit->uniqueid."'>".$polling_unit->polling_unit_name."</option>";
+        }
+    }
+
+    public function actionListResultByPollingUnitUid($id){
+        $results = AnnouncedPuResults::find()
+                    ->where(['polling_unit_uniqueid'=>$id])
+                    ->all();
+
+        if($results){
+
+            echo '<table class="table table-header table-bordered table-striped">
+                        <thead>
+                            <th>Polling Unit Name</th>
+                            <th>Polling Unit Ward</th>
+                            <th>Polling Unit Lga</th>
+                            <th>Party Name</th>
+                            <th>Party Score</th>
+                        </thead>
+                        <tbody>';
+            $total = 0;
+            foreach($results as $result){
+
+                   echo '<tr>
+                        <td>'.$result->polling_unit->polling_unit_name.'</td>
+                        <td>'.$result->polling_unit->ward->ward_name.'</td>
+                        <td>'.$result->polling_unit->lga->lga_name.'</td>
+                        <td>'.$result->party_abbreviation.'</td>
+                        <td>'.$result->party_score.'</td>
+                    </tr>';
+
+                    $total += $result->party_score;
+
+                }
+
+                echo '<tr>
+                    <td colspan="4"><strong class="text-center">Total</strong></td>
+                    <td><strong>'.$total.'</strong></td>
+                </tr>
+
+                            
+                        </tbody>
+                    </table>';
+        } else {
+            echo "No Result available For This LGA.";
+        }
 
     }
 }

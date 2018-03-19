@@ -1,45 +1,70 @@
 <?php
 /* @var $this yii\web\View */
 	use yii\helpers\Html;
+	use app\models\Lga;
+    use app\models\AnnouncedPuResults;
+    use app\models\States;
+    use app\models\Ward;
+	use app\models\PollingUnit;
 
-	use yii\widgets\LinkPager;
+	// use yii\widgets\LinkPager;
 ?>
-<h2 class="page-header">
-	All Polling Units Results
-	<?php if(!Yii::$app->user->isGuest && Yii::$app->user->identity->role =='admin') : ?>
-           
-		<a href="new_pu" class="btn btn-primary pull-right">New</a>
 
-	<?php endif; ?>
+<div class="container">
+
+<h2 class="page-header">
+	Polling Units Results
 </h2>
 
-<?php if(Yii::$app->session->hasFlash('success')) : ?>
-	<div class="alert alert-success"><?=Yii::$app->session->getFlash('success')?></div>
-<?php endif; ?>
 
-<?php if($ann_pu_res) : ?>
-	<table class="table table-header table-bordered table-striped">
-		<thead>
-			<th>Polling Unit Name</th>
-			<th>Polling Unit Ward</th>
-			<th>Polling Unit Lga</th>
-			<th>Party Name</th>
-			<th>Party Score</th>
-		</thead>
-		<tbody>
-			<?php foreach($ann_pu_res as $pu_res) : ?>
-				<tr>
-					<td><?=$pu_res->polling_unit->polling_unit_name?></td>
-					<td><?=$pu_res->polling_unit->ward->ward_name?></td>
-					<td><?=$pu_res->polling_unit->lga->lga_name?></td>
-					<td><?=$pu_res->party_abbreviation?></td>
-					<td><?=$pu_res->party_score?></td>
-				</tr>
-			<?php endforeach; ?>
-		</tbody>
-	</table>
-<?php else: ?>
-	Not available
-<?php endif; ?>
 
-<?= LinkPager::widget(['pagination'=>$pagination]) ?>
+<p>Please Select an LGA below to View Corresponding Election Result</p>
+
+<!-- Selecting State -->
+<label for="state_id">State</label>
+<?= Html::dropDownList('state_id',$selection = null, States::find()
+                    ->select(['state_name', 'state_id'])
+                    ->orderBy('state_name')
+                    ->indexBy('state_id')
+                    ->column(), [
+                        'prompt'=>'Select State',
+                        'onchange'=>'
+                            $.post("'.Yii::$app->urlManager->createUrl('/results/list-lga-by-state?id=').'"+$(this).val(), function(data){
+                            $("select[name=lga_id]").html(data);
+                        });'
+
+                    ], ['class'=>'form-control'])?>
+
+<!-- Selecting LGA -->
+<label for="lga_id">Local Government Area</label>
+<?= Html::dropDownList('lga_id',$selection = null, Lga::find()
+                    ->select(['lga_name', 'lga_id'])
+                    ->indexBy('lga_id')
+                    ->column(), [
+                        'prompt'=>'Select Local Government Area',
+                        'onchange'=>'
+                            $.post("'.Yii::$app->urlManager->createUrl('/results/list-polling-unit-uid-by-lga?id=').'"+$(this).val(), function(data){
+                            $("select[name=uniqueid]").html(data);
+                        });'
+                    ], ['class'=>'form-control'])?>
+
+<!-- Selecting Polling Unit -->
+<label for="uniqueid">Polling Unit</label>
+<?= Html::dropDownList('uniqueid',$selection = null, PollingUnit::find()
+                    ->select(['polling_unit_name', 'uniqueid'])
+                    ->indexBy('uniqueid')
+                    ->column(), [
+                        'prompt'=>'Select Local Government Area',
+                        'onchange'=>'
+                            $.post("'.Yii::$app->urlManager->createUrl('/results/list-result-by-polling-unit-uid?id=').'"+$(this).val(), function(data){
+                            $("div.results").html(data);
+                        });'
+                    ], ['class'=>'form-control'])?>
+
+
+
+
+
+</div>
+
+<div class="container results"></div>
