@@ -17,6 +17,9 @@ use app\models\Party;
 
 <h2 class="page-header">New Polling Unit Result</h2>
 
+<?php if(Yii::$app->session->hasFlash('success')) : ?>
+    <div class="alert alert-success"><?=Yii::$app->session->getFlash('success')?></div>
+<?php endif; ?>
 
 <div class="polling-unit-new">
 

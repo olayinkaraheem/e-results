@@ -13,9 +13,13 @@
 <div class="container">
 
 <h2 class="page-header">
-	Polling Units Results
-</h2>
+    Polling Units Results
+    <?php if(!Yii::$app->user->isGuest && Yii::$app->user->identity->role =='admin') : ?>
+           
+        <a href="new_pu" class="btn btn-primary pull-right">New</a>
 
+    <?php endif; ?>
+</h2>
 
 
 <p>Please Select an LGA below to View Corresponding Election Result</p>

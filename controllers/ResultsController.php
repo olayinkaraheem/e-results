@@ -194,7 +194,7 @@ class ResultsController extends \yii\web\Controller {
 
                 Yii::$app->session->setFlash('success', 'Result Added Successfully');
 
-                return $this->redirect('polling-unit');
+                return $this->redirect('new_pu');
             }
         }
 
