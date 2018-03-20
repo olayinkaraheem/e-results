@@ -8,6 +8,7 @@ use app\models\Lga;
 use app\models\Ward;
 use app\models\PollingUnit;
 use app\models\Party;
+use app\models\States;
 
 
 /* @var $this yii\web\View */
@@ -26,6 +27,20 @@ use app\models\Party;
     <?php $form = ActiveForm::begin(); ?>
 
     <?=$form->errorSummary($new_result) ?>
+
+    <label for="state_name">State</label>
+
+    <?= Html::dropDownList('state',$selection = null, States::find()
+                        ->orderBy('state_name')
+                        ->select(['state_name', 'state_id'])
+                        ->indexBy('state_id')
+                        ->column(), [
+                            'prompt'=>'Select State',
+                            'onchange'=>'
+                                $.post("'.Yii::$app->urlManager->createUrl('/results/list-lga-by-state?id=').'"+$(this).val(), function(data){
+                                $("select[name=lga_id]").html(data);
+                            });'
+                        ], ['class'=>'form-control'])?>
 
     <label for="lga_id">LGA Name</label>
         <?= Html::dropDownList('lga_id', $selection = null, Lga::find()
