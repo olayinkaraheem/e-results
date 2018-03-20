@@ -88,7 +88,7 @@ use app\models\States;
         <?= $form->field($new_result, 'party_score') ?>
         <?= $form->field($new_result, 'entered_by_user') ?>
         <?= $form->field($new_result, 'date_entered')->input('datetime-local') ?>
-        <?= $form->field($new_result, 'user_ip_address') ?>
+        <?= $form->field($new_result, 'user_ip_address')->textInput(['value'=>getenv('REMOTE_ADDR'), 'disabled'=>'disabled']) ?>
 
 
     
